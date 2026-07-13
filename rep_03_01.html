@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3차시 활동지 - 펀딩 페이지 프롬프트 빌더</title>
+    <title>3차시 펀딩 페이지 프롬프트 빌더</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
@@ -13,10 +13,34 @@
         body { font-family: 'Noto Sans KR', sans-serif; background-color: #f3f4f6; padding: 20px; }
         .a4-page { width: 210mm; min-height: 297mm; padding: 15mm 20mm; margin: 10mm auto; background: white; box-shadow: 0 4px 12px rgba(0,0,0,0.15); box-sizing: border-box; }
         
-        /* 짧은 단어용 밑줄 입력칸 */
-        .input-fill { border: none; border-bottom: 2px dashed #6366f1; background: transparent; padding: 0 5px; outline: none; color: #4f46e5; font-weight: bold; }
+        /* 자동으로 가로가 늘어나는 인라인 입력칸 */
+        .editable-inline {
+            border-bottom: 2px dashed #6366f1;
+            color: #4f46e5;
+            font-weight: bold;
+            outline: none;
+            min-width: 80px;
+            display: inline-block;
+            padding: 0 6px;
+            line-height: 1.4;
+            transition: border-color 0.2s;
+            word-wrap: break-word;
+            max-width: 100%;
+        }
+        .editable-inline:focus {
+            border-bottom-style: solid;
+            background-color: rgba(99, 102, 241, 0.05);
+            border-radius: 4px 4px 0 0;
+        }
+        /* 입력값이 없을 때 안내문구(Placeholder) 표시 */
+        .editable-inline:empty::before {
+            content: attr(data-placeholder);
+            color: #94a3b8;
+            font-weight: 400;
+            pointer-events: none;
+        }
         
-        /* 긴 URL 및 문장용 자동 줄바꿈 입력칸 */
+        /* 긴 URL 및 문장용 자동 세로 줄바꿈 입력칸 */
         .textarea-fill { 
             border: 1px dashed #6366f1; 
             border-radius: 4px;
@@ -26,11 +50,11 @@
             color: #4f46e5; 
             font-weight: bold; 
             width: 100%; 
-            resize: none; /* 사용자가 크기 조절 불가 */
-            overflow: hidden; /* 스크롤바 숨김 */
+            resize: none; 
+            overflow: hidden; 
             display: inline-block;
             vertical-align: middle;
-            font-family: monospace; /* URL 가독성을 위해 고정폭 폰트 사용 */
+            font-family: monospace; 
             font-size: 0.9em;
             word-break: break-all;
         }
@@ -46,9 +70,17 @@
             resize: none;
             color: #334155;
             line-height: 1.6;
+            font-family: 'Noto Sans KR', sans-serif;
         }
 
-        .prompt-box { background-color: #f8fafc; padding: 25px; border-radius: 12px; border: 1px solid #e2e8f0; border-left: 6px solid #6366f1; line-height: 2; font-size: 1rem; color: #334155; }
+        .prompt-box { background-color: #f8fafc; padding: 25px; border-radius: 12px; border: 1px solid #e2e8f0; border-left: 6px solid #6366f1; line-height: 2.2; font-size: 1rem; color: #334155; }
+        
+        /* PDF 변환 시 플레이스홀더 숨김 */
+        .generating-pdf .editable-inline:empty::before,
+        .generating-pdf textarea::placeholder {
+            color: transparent !important;
+        }
+
         @media print { .no-print { display: none !important; } }
     </style>
 </head>
@@ -60,11 +92,11 @@
     </div>
 
     <div id="pdf-content" class="a4-page pt-20">
-        <!-- 수정된 헤더 디자인 -->
+        <!-- 헤더 -->
         <div class="flex justify-between items-start border-b-4 border-indigo-500 pb-3 mb-6">
             <div>
                 <div class="text-indigo-600 font-black tracking-widest text-sm mb-1">PROJECT: CROWD FUNDING</div>
-                <h1 class="text-3xl font-black text-gray-900">🚀 웹페이지 런칭 프롬프트 빌더</h1>
+                <h1 class="text-3xl font-black text-gray-900">🚀 웹사이트 런칭 AI 지시서 (프롬프트 빌더)</h1>
             </div>
             <div class="text-right flex flex-col items-end">
                 <div class="border-2 border-gray-300 rounded px-3 py-1 inline-block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">Confidential</div>
@@ -73,15 +105,16 @@
         </div>
         
         <p class="text-sm text-slate-500 mb-6 font-bold bg-slate-100 p-4 rounded-lg border border-slate-200">
-            <i class="fa-solid fa-wand-magic-sparkles text-indigo-500 mr-2"></i> 이 박스 안의 내용을 완성한 후, <b class="text-indigo-600">전체 텍스트를 드래그해서 복사(Ctrl+C)</b>한 다음 AI(Gemini)에게 붙여넣기 하세요.
+            <i class="fa-solid fa-wand-magic-sparkles text-indigo-500 mr-2"></i> 이 박스 안의 빈칸을 완성한 후, <b class="text-indigo-600">전체 텍스트를 드래그해서 복사(Ctrl+C)</b>하여 AI(Gemini)에게 붙여넣기 하세요.
         </p>
 
+        <!-- 프롬프트 조립 상자 -->
         <div class="prompt-box">
-            "너는 최고의 웹 개발자야. 나의 친환경 스타트업 <input type="text" class="input-fill" style="width: 150px;" placeholder="회사이름"> 의 크라우드 펀딩 페이지를 HTML 파일 하나로 만들어줘. 
+            "너는 최고의 웹 개발자야. 나의 친환경 스타트업 <span contenteditable="true" class="editable-inline" data-placeholder="회사이름"></span> 의 크라우드 펀딩 페이지를 HTML 파일 하나로 만들어줘. 
             <br><br>
-            우리 회사는 <input type="text" class="input-fill" style="width: 180px;" placeholder="해결하려는 사회 문제"> 문제를 해결하기 위해, <input type="text" class="input-fill" style="width: 120px;" placeholder="모방한 생물">의 <input type="text" class="input-fill" style="width: 120px;" placeholder="신체 원리"> 원리를 모방한 <input type="text" class="input-fill" style="width: 150px;" placeholder="발전소/기술명"> 기술을 개발했어.
+            우리 회사는 <span contenteditable="true" class="editable-inline" data-placeholder="해결하려는 사회 문제"></span> 문제를 해결하기 위해, <span contenteditable="true" class="editable-inline" data-placeholder="모방한 생물"></span>의 <span contenteditable="true" class="editable-inline" data-placeholder="신체 원리"></span> 원리를 모방한 <span contenteditable="true" class="editable-inline" data-placeholder="발전소/기술명"></span> 기술을 개발했어.
             <br><br>
-            웹사이트 디자인은 <input type="text" class="input-fill" style="width: 150px;" placeholder="분위기/느낌">한 느낌으로 <input type="text" class="input-fill" style="width: 150px;" placeholder="메인 색상"> 색상을 포인트로 써줘.
+            웹사이트 디자인은 <span contenteditable="true" class="editable-inline" data-placeholder="분위기/느낌"></span>한 느낌으로 <span contenteditable="true" class="editable-inline" data-placeholder="메인 색상"></span> 색상을 포인트로 써줘.
             <br><br>
             <b>[이미지 배치]:</b><br>
             로고는 아래 주소를 사용하고,<br>
@@ -90,7 +123,7 @@
             발전소 조감도/구조도는 아래 주소를 적절한 위치에 배치해줘.<br>
             <textarea class="textarea-fill" rows="1" oninput="autoResize(this)" placeholder="조감도/구조도 이미지 주소(URL) 붙여넣기"></textarea>
             <br><br>
-            기능적으로는 화면 맨 아래에 <input type="text" class="input-fill" style="width: 300px;" placeholder="예: 이름, 투자금액, 응원메시지">을 입력받는 펀딩 폼을 생성해 줘.
+            기능적으로는 화면 맨 아래에 <span contenteditable="true" class="editable-inline" data-placeholder="예: 이름, 투자금액, 응원메시지"></span>을(를) 입력받는 펀딩 폼을 생성해 줘.
             <br><br>
             제출 시 데이터를 아래 API 주소로 전송하는 자바스크립트를 포함해 줘.
             <br>
@@ -98,14 +131,14 @@
             <textarea class="textarea-fill text-red-600" rows="1" style="background: rgba(239, 68, 68, 0.05); border-color: #ef4444;" oninput="autoResize(this)" placeholder="선생님이 알려주신 구글 시트 주소 붙여넣기"></textarea>
             <br><br>
             <b>추가 요청사항:</b><br>
-            <textarea class="textarea-extra" oninput="autoResize(this)" placeholder="AI에게 특별히 더 요구하고 싶은 디자인이나 기능이 있다면 자유롭게 적어주세요."></textarea>
+            <textarea class="textarea-extra" oninput="autoResize(this)" placeholder="AI에게 특별히 더 요구하고 싶은 디자인이나 기능이 있다면 이곳에 자유롭게 적어주세요."></textarea>
             "
         </div>
 
         <div class="mt-8 bg-emerald-50 p-6 rounded-xl border border-emerald-200">
             <h3 class="font-bold text-emerald-900 mb-2 text-lg"><i class="fa-solid fa-check-double mr-2"></i> 최종 점검 및 복사</h3>
             <p class="text-sm text-emerald-800 leading-relaxed">
-                빈칸을 모두 채웠나요? <b>[이미지 주소]</b>와 <b>[API 주소]</b>가 정확하게 입력되었는지 다시 한번 확인하세요. 완벽하다면 위의 박스 안 내용을 <b class="bg-emerald-200 px-1 rounded">전체 드래그</b>하여 AI에게 전달하세요!
+                빈칸을 모두 채웠나요? 글자가 잘리지 않고 잘 보이는지, <b>[이미지 주소]</b>와 <b>[API 주소]</b>가 정확하게 입력되었는지 다시 한번 확인하세요. 완벽하다면 위의 박스 안 내용을 <b class="bg-emerald-200 px-1 rounded">전체 드래그</b>하여 AI에게 전달하세요!
             </p>
         </div>
     </div>
@@ -121,6 +154,9 @@
         function generatePDF() {
             const element = document.getElementById('pdf-content');
             
+            // PDF 변환 중 placeholder 숨기기 위한 클래스 추가
+            element.classList.add('generating-pdf');
+
             // PDF 변환 전 textarea의 높이를 고정 (짤림 방지)
             const textareas = document.querySelectorAll('textarea');
             textareas.forEach(ta => {
@@ -129,11 +165,13 @@
 
             html2pdf().from(element).set({
                 margin: 0,
-                filename: '펀딩페이지_기획_프롬프트.pdf',
+                filename: '펀딩페이지_프롬프트_빌더.pdf',
                 image: { type: 'jpeg', quality: 1 },
                 html2canvas: { scale: 2 },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            }).save();
+            }).save().then(() => {
+                element.classList.remove('generating-pdf');
+            });
         }
     </script>
 </body>
