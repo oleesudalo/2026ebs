@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2차시 활동지 - 스타트업 시각화 디자인 기획서</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f3f4f6;
+            margin: 0;
+            padding: 0;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        /* A4 페이지 고정 규격 */
+        .a4-page {
+            width: 210mm;
+            height: 297mm;
+            padding: 15mm 20mm;
+            box-sizing: border-box;
+            background: white;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 웹앱 입력폼 전용 스타일 */
+        .input-line {
+            width: 100%;
+            border: none;
+            border-bottom: 2px solid #cbd5e1;
+            background-color: transparent;
+            padding: 6px 8px;
+            font-size: 0.95rem;
+            color: #1e293b;
+            font-weight: 500;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .input-line:focus { border-bottom-color: #ec4899; }
+        
+        .input-box {
+            width: 100%;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            background-color: #f8fafc;
+            padding: 10px;
+            font-size: 0.95rem;
+            color: #1e293b;
+            font-weight: 500;
+            outline: none;
+            resize: none;
+            transition: border-color 0.2s;
+        }
+        .input-box:focus { border-color: #ec4899; background-color: #ffffff; }
+
+        .ai-badge {
+            display: inline-flex;
+            align-items: center;
+            background-color: #1e293b;
+            color: #f472b6;
+            font-size: 0.75rem;
+            font-weight: bold;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* PDF 변환 시 플레이스홀더 텍스트 숨기기 */
+        .generating-pdf input::placeholder, 
+        .generating-pdf textarea::placeholder {
+            color: transparent !important;
+        }
+
+        @media print {
+            body { background: white; }
+            .a4-page { margin: 0; box-shadow: none; width: 210mm; height: 297mm; padding: 15mm 20mm; page-break-after: always; }
+            .no-print { display: none !important; }
+            input::placeholder, textarea::placeholder { color: transparent !important; }
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- 상단 컨트롤 바 -->
+    <div class="no-print fixed top-0 w-full bg-slate-800 text-white p-4 z-50 flex justify-between items-center shadow-lg">
+        <div class="text-sm">
+            <span class="font-bold text-pink-400">🎨 [2차시 웹앱 활동지]</span> 빈칸을 타이핑해서 채운 후 <b>2장(2 Pages) PDF</b>로 다운로드하세요.
+        </div>
+        <button id="downloadBtn" onclick="generatePDF()" class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-2 px-6 rounded-full transition-colors flex items-center shadow-md cursor-pointer">
+            <i class="fa-solid fa-download mr-2"></i> 작성한 내용 PDF 다운로드
+        </button>
+    </div>
+    
+    <div id="pdf-wrapper" class="pt-24 pb-10 flex flex-col items-center w-full min-h-screen">
+        
+        <div id="pdf-content" class="bg-white shadow-2xl flex flex-col" style="width: 210mm;">
+            
+            <!-- ================= PAGE 1 ================= -->
+            <div class="a4-page">
+                <!-- Header -->
+                <div class="flex justify-between items-start border-b-4 border-pink-500 pb-3 mb-5 shrink-0">
+                    <div>
+                        <div class="text-pink-600 font-black tracking-widest text-sm mb-1">ACTIVITY 03 : VISUAL DESIGN SPECIFICATION</div>
+                        <h1 class="text-4xl font-black text-gray-900 tracking-tight">시각화 디자인 기획서</h1>
+                    </div>
+                    <div class="text-right">
+                        <div class="flex gap-2 justify-end mb-2 items-center">
+                            <div class="border-2 border-slate-300 px-3 py-1 text-sm font-bold text-slate-500 rounded whitespace-nowrap">기 업 명</div>
+                            <input type="text" class="border-b-2 border-slate-400 w-32 outline-none text-right font-bold text-slate-800 bg-transparent px-1" placeholder="입력">
+                        </div>
+                        <div class="flex gap-2 justify-end items-center">
+                            <div class="border-2 border-slate-300 px-3 py-1 text-sm font-bold text-slate-500 rounded whitespace-nowrap">수석 디자이너</div>
+                            <input type="text" class="border-b-2 border-slate-400 w-32 outline-none text-right font-bold text-slate-800 bg-transparent px-1" placeholder="입력">
+                        </div>
+                    </div>
+                </div>
+
+                <p class="text-sm text-slate-500 mb-6 font-bold bg-slate-100 p-3 rounded-lg border border-slate-200 shrink-0">
+                    <i class="fa-solid fa-palette text-pink-500 mr-2"></i> 1차시에서 기획한 아이디어를 눈에 보이도록 시각화(Logo & Diagram)하는 설계도입니다.
+                </p>
+
+                <!-- 1. 기본 정보 (1차시 재료 가져오기) -->
+                <div class="mb-6 shrink-0">
+                    <h2 class="text-xl font-bold flex items-center text-gray-800 mb-3">
+                        <span class="bg-pink-100 text-pink-600 w-8 h-8 rounded-full flex items-center justify-center mr-3 border border-pink-200 text-base">1</span>
+                        디자인 기본 에셋 (1차시 기획서 참조)
+                    </h2>
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 shadow-sm ml-11 grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="font-bold text-slate-700 text-sm flex items-center mb-1"><i class="fa-solid fa-dna mr-2 text-pink-400"></i> 모방한 생물</label>
+                            <input type="text" class="input-line bg-white rounded" placeholder="예: 물총새 부리">
+                        </div>
+                        <div>
+                            <label class="font-bold text-slate-700 text-sm flex items-center mb-1"><i class="fa-solid fa-solar-panel mr-2 text-pink-400"></i> 적용할 발전 형태</label>
+                            <input type="text" class="input-line bg-white rounded" placeholder="예: 수중 터빈 발전소">
+                        </div>
+                        <div class="col-span-2">
+                            <label class="font-bold text-slate-700 text-sm flex items-center mb-1"><i class="fa-solid fa-lightbulb mr-2 text-pink-400"></i> 핵심 원리 (짧게)</label>
+                            <input type="text" class="input-line bg-white rounded" placeholder="예: 유선형 구조로 물의 저항을 줄여 소음 없이 전기 생산">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. 브랜드 로고 기획 -->
+                <div class="mb-6 shrink-0 flex-1">
+                    <h2 class="text-xl font-bold flex items-center text-gray-800 mb-3">
+                        <span class="bg-pink-100 text-pink-600 w-8 h-8 rounded-full flex items-center justify-center mr-3 border border-pink-200 text-base">2</span>
+                        브랜드 로고(Logo) 기획
+                    </h2>
+                    <div class="bg-pink-50 p-4 rounded-xl border border-pink-200 shadow-sm ml-11 flex flex-col h-full">
+                        <div class="flex gap-4 mb-4">
+                            <div class="flex-1">
+                                <label class="font-bold text-pink-900 text-sm block mb-1">🎨 메인 브랜드 색상</label>
+                                <input type="text" class="input-line border-pink-300 bg-white rounded" placeholder="예: 바다를 닮은 푸른색과 초록색">
+                            </div>
+                            <div class="flex-1">
+                                <label class="font-bold text-pink-900 text-sm block mb-1">🌟 로고에 들어갈 핵심 심볼</label>
+                                <input type="text" class="input-line border-pink-300 bg-white rounded" placeholder="예: 물총새의 부리와 프로펠러 융합">
+                            </div>
+                        </div>
+                        <div class="flex-1 flex flex-col">
+                            <label class="font-bold text-pink-900 text-sm flex items-center mb-1">
+                                <i class="fa-solid fa-wand-magic-sparkles mr-2 text-pink-500"></i> 로고 생성 마법의 프롬프트 초안
+                            </label>
+                            <p class="text-[11px] text-pink-700 mb-2">Canva 이미지 AI에게 복사해 줄 명사 위주의 키워드를 나열하세요.</p>
+                            <textarea class="input-box flex-1 border-pink-300 bg-white" placeholder="예: 친환경 에너지 스타트업 로고, 물총새 부리 모양, 수중 터빈, 푸른색과 초록색 조합, 심플한 벡터 스타일, 텍스트 제외"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. 외관(조감도) 기획 -->
+                <div class="shrink-0">
+                    <h2 class="text-xl font-bold flex items-center text-gray-800 mb-3">
+                        <span class="bg-pink-100 text-pink-600 w-8 h-8 rounded-full flex items-center justify-center mr-3 border border-pink-200 text-base">3</span>
+                        제품 조감도(Rendering) 기획
+                    </h2>
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 shadow-sm ml-11 grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="font-bold text-slate-700 text-sm flex items-center mb-1"><i class="fa-solid fa-hammer mr-2 text-slate-500"></i> 외관 소재 (Material)</label>
+                            <input type="text" class="input-line bg-white rounded" placeholder="예: 녹슬지 않는 티타늄 합금">
+                        </div>
+                        <div>
+                            <label class="font-bold text-slate-700 text-sm flex items-center mb-1"><i class="fa-solid fa-ruler-combined mr-2 text-slate-500"></i> 설치 크기 (Size)</label>
+                            <input type="text" class="input-line bg-white rounded" placeholder="예: 가로 2m 크기의 소형 터빈">
+                        </div>
+                        <div class="col-span-2">
+                            <label class="font-bold text-slate-700 text-sm flex items-center mb-1"><i class="fa-solid fa-eye mr-2 text-slate-500"></i> 눈에 띄는 디자인 포인트</label>
+                            <input type="text" class="input-line bg-white rounded" placeholder="예: 앞부분이 유선형으로 뾰족하게 튀어나옴">
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- End of Page 1 -->
+
+            <!-- PAGE BREAK -->
+            <div class="html2pdf__page-break"></div>
+            
+            <!-- 화면 구분선 -->
+            <div class="w-full border-t-4 border-dashed border-slate-300 relative bg-slate-100 py-3" data-html2canvas-ignore="true">
+                <p class="text-center text-slate-400 font-bold text-sm">✂️ --- PAGE 2 --- ✂️</p>
+            </div>
+
+            <!-- ================= PAGE 2 ================= -->
+            <div class="a4-page">
+                <div class="text-pink-600 font-black tracking-widest text-sm mb-6 border-b-2 border-pink-500 pb-2 shrink-0">ACTIVITY 03 : VISUAL DESIGN SPECIFICATION (PAGE 2)</div>
+
+                <!-- 4. 내부 구조도 설계 -->
+                <div class="mb-6 shrink-0 flex-1 flex flex-col">
+                    <h2 class="text-xl font-bold flex items-center text-gray-800 mb-3">
+                        <span class="bg-blue-100 text-blue-600 w-8 h-8 rounded-full flex items-center justify-center mr-3 border border-blue-200 text-base">4</span>
+                        작동 원리를 보여줄 구조도(Diagram) 설계
+                    </h2>
+                    <p class="text-sm text-slate-500 mb-3 ml-11 font-bold">투자자에게 사기꾼이 아님을 증명하려면, 내부의 작동 원리가 단면도 형태로 보여야 합니다.</p>
+                    
+                    <div class="bg-white border-2 border-slate-200 p-4 rounded-xl shadow-sm ml-11 flex-1 flex flex-col gap-4">
+                        <div class="flex-1 flex flex-col">
+                            <label class="font-bold text-slate-700 text-sm flex items-center mb-1"><i class="fa-solid fa-gear text-blue-500 mr-2"></i> 1. 내부에 반드시 그려져야 할 핵심 부품</label>
+                            <textarea class="input-box flex-1" placeholder="예: 중앙 회전 모터, 회전 블레이드(프로펠러), 해저 케이블"></textarea>
+                        </div>
+                        <div class="flex-1 flex flex-col">
+                            <label class="font-bold text-slate-700 text-sm flex items-center mb-1"><i class="fa-solid fa-wind text-emerald-500 mr-2"></i> 2. 에너지의 흐름 (작동 순서)</label>
+                            <textarea class="input-box flex-1" placeholder="예: 바닷물 유입 ➔ 부리 모양 커버가 저항 최소화 ➔ 프로펠러 고속 회전 ➔ 발전기 전기 생산"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. 구조도 프롬프트 작성 -->
+                <div class="mb-6 shrink-0">
+                    <div class="ml-11 bg-slate-800 p-5 rounded-2xl text-white shadow-lg relative overflow-hidden">
+                        <i class="fa-solid fa-code absolute -right-4 -bottom-4 text-8xl text-slate-600 opacity-30"></i>
+                        
+                        <div class="relative z-10">
+                            <h3 class="font-bold text-blue-300 text-lg mb-2 flex items-center">
+                                <i class="fa-solid fa-wand-magic-sparkles text-blue-400 mr-2"></i> 구조도 생성 마법의 프롬프트 완성
+                            </h3>
+                            <p class="text-xs text-slate-300 mb-3">위 3, 4번의 재료를 바탕으로 내부가 보이는 인포그래픽 프롬프트를 조립하세요.</p>
+                            
+                            <div class="flex flex-wrap gap-2 mb-3 text-[11px] font-bold">
+                                <span class="bg-slate-700 px-2 py-1 rounded border border-slate-600">생체모방 요소</span><span class="text-slate-500">+</span>
+                                <span class="bg-slate-700 px-2 py-1 rounded border border-slate-600">작동 환경</span><span class="text-slate-500">+</span>
+                                <span class="bg-slate-700 px-2 py-1 rounded text-yellow-300 border border-yellow-500/50">내부 부품</span><span class="text-slate-500">+</span>
+                                <span class="bg-slate-700 px-2 py-1 rounded text-pink-300 border border-pink-500/50">단면도(Cross-section) 필수</span>
+                            </div>
+                            
+                            <textarea class="input-box h-20 bg-slate-900 border-slate-600 text-white text-sm" placeholder="예: 물총새 부리를 모방한 유선형 수중 터빈, 바다 아래 고정된 환경, 내부에 프로펠러와 모터가 들어있음, 단면 구조도(Cross-section), 깔끔한 인포그래픽 스타일"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6. 마무리 체크 및 서명 -->
+                <div class="mt-auto shrink-0 bg-slate-50 border-2 border-slate-200 rounded-xl p-6 text-center relative shadow-sm ml-11 mb-2">
+                    <h3 class="font-bold text-pink-600 text-lg mb-3"><i class="fa-solid fa-check-circle mr-2"></i> 최종 자산(Asset) 점검 완료</h3>
+                    
+                    <div class="flex justify-center gap-8 mb-6">
+                        <label class="flex items-center text-sm font-bold text-slate-700 cursor-pointer">
+                            <input type="checkbox" class="w-5 h-5 mr-2 accent-pink-500 cursor-pointer"> Canva 로고 생성 완료
+                        </label>
+                        <label class="flex items-center text-sm font-bold text-slate-700 cursor-pointer">
+                            <input type="checkbox" class="w-5 h-5 mr-2 accent-pink-500 cursor-pointer"> Canva 구조도 생성 완료
+                        </label>
+                    </div>
+
+                    <p class="text-sm font-bold text-slate-500 italic mb-4">
+                        "이 설계도를 바탕으로 3차시 크라우드 펀딩 웹사이트 제작에 필요한 이미지 재료 준비를 완료했습니다."
+                    </p>
+                    
+                    <div class="flex justify-center items-center gap-4 text-sm font-bold text-slate-700 whitespace-nowrap">
+                        <span>수석 디자이너 서명 :</span>
+                        <input type="text" class="border-b-2 border-slate-400 w-32 text-center bg-transparent outline-none px-2 text-lg" placeholder="이름 입력">
+                        <span>(인)</span>
+                    </div>
+                </div>
+            </div> <!-- End of Page 2 -->
+
+        </div>
+    </div>
+
+    <script>
+        function syncInputValues() {
+            const inputs = document.querySelectorAll('input[type="text"]');
+            inputs.forEach(input => {
+                input.setAttribute('value', input.value);
+            });
+            
+            const textareas = document.querySelectorAll('textarea');
+            textareas.forEach(ta => {
+                ta.innerHTML = ta.value;
+                ta.textContent = ta.value;
+            });
+            
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(cb => {
+                if(cb.checked) {
+                    cb.setAttribute('checked', 'checked');
+                } else {
+                    cb.removeAttribute('checked');
+                }
+            });
+        }
+
+        function generatePDF() {
+            const btn = document.getElementById('downloadBtn');
+            const element = document.getElementById('pdf-content');
+            const originalContent = btn.innerHTML;
+            
+            syncInputValues();
+            
+            element.classList.add('generating-pdf');
+            
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i> PDF 생성 중...`;
+            btn.disabled = true;
+            btn.classList.add('cursor-not-allowed', 'opacity-75');
+
+            const opt = {
+                margin:       0,
+                filename:     '2차시_시각화_디자인_기획서.pdf',
+                image:        { type: 'jpeg', quality: 1 },
+                html2canvas:  { 
+                    scale: 2, 
+                    useCORS: true, 
+                    scrollY: 0, 
+                    windowWidth: document.documentElement.offsetWidth
+                }, 
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                pagebreak:    { mode: ['css', 'legacy'] }
+            };
+
+            window.scrollTo(0, 0);
+
+            html2pdf().set(opt).from(element).save().then(() => {
+                btn.innerHTML = originalContent;
+                btn.disabled = false;
+                btn.classList.remove('cursor-not-allowed', 'opacity-75');
+                element.classList.remove('generating-pdf');
+            }).catch(err => {
+                console.error("PDF 생성 오류:", err);
+                alert("다운로드 중 오류가 발생했습니다.");
+                btn.innerHTML = originalContent;
+                btn.disabled = false;
+                element.classList.remove('generating-pdf');
+            });
+        }
+    </script>
+</body>
+</html>
