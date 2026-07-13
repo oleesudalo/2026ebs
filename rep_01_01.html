@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1차시 활동지 - 스타트업 설립 선언문</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f3f4f6;
+            margin: 0;
+            padding: 0;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        /* PDF 변환 안정성을 위한 A4 페이지 설정 */
+        .a4-page {
+            width: 210mm;
+            min-height: 297mm;
+            padding: 15mm 20mm;
+            box-sizing: border-box;
+            background: white;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            margin: 0 auto;
+        }
+
+        /* 웹앱 입력폼 전용 스타일 */
+        .input-line {
+            width: 100%;
+            border: none;
+            border-bottom: 2px solid #cbd5e1;
+            background-color: transparent;
+            padding: 8px 12px;
+            font-size: 1rem;
+            color: #1e293b;
+            font-weight: 500;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .input-line:focus { border-bottom-color: #10b981; }
+        
+        .input-box {
+            width: 100%;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            background-color: #f8fafc;
+            padding: 12px;
+            font-size: 0.95rem;
+            color: #1e293b;
+            font-weight: 500;
+            outline: none;
+            resize: none;
+            transition: border-color 0.2s;
+        }
+        .input-box:focus { border-color: #10b981; background-color: #ffffff; }
+
+        /* PDF 변환 중일 때 플레이스홀더(안내문구) 숨기기 */
+        .generating-pdf input::placeholder, 
+        .generating-pdf textarea::placeholder {
+            color: transparent !important;
+        }
+
+        /* 인쇄 및 PDF 변환 시 적용되는 스타일 */
+        @media print {
+            body { background: white; }
+            .a4-page { margin: 0; box-shadow: none; width: 210mm; height: 297mm; padding: 15mm 20mm; page-break-after: always; }
+            .no-print { display: none !important; }
+            input::placeholder, textarea::placeholder { color: transparent !important; }
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <div class="no-print fixed top-0 w-full bg-slate-800 text-white p-4 z-50 flex justify-between items-center shadow-lg">
+        <div class="text-sm">
+            <span class="font-bold text-emerald-400">🌱 [1차시 웹앱 활동지]</span> 빈칸을 타이핑해서 채운 후 <b>2장(2 Pages) PDF</b>로 다운로드하세요.
+        </div>
+        <button id="downloadBtn" onclick="generatePDF()" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 px-6 rounded-full transition-colors flex items-center shadow-md cursor-pointer">
+            <i class="fa-solid fa-download mr-2"></i> 작성한 내용 PDF 다운로드
+        </button>
+    </div>
+    
+    <div id="pdf-wrapper" class="pt-24 pb-10 flex flex-col items-center w-full min-h-screen">
+        
+        <div id="pdf-content" class="bg-white shadow-2xl flex flex-col" style="width: 210mm;">
+            
+            <!-- ================= PAGE 1 ================= -->
+            <div class="a4-page">
+                <!-- Header -->
+                <div class="flex justify-between items-start border-b-4 border-emerald-500 pb-3 mb-5 shrink-0">
+                    <div>
+                        <div class="text-emerald-600 font-black tracking-widest text-sm mb-1">PROJECT: ECO-ENERGY STARTUP</div>
+                        <h1 class="text-4xl font-black text-gray-900 tracking-tight">스타트업 설립 선언문</h1>
+                    </div>
+                    <div class="text-right flex flex-col items-end justify-end">
+                        <div class="text-slate-400 font-bold text-sm mb-1">CONFIDENTIAL</div>
+                        <div class="bg-slate-800 text-white px-3 py-1 text-sm font-bold rounded">1차시 활동지</div>
+                    </div>
+                </div>
+
+                <!-- 1. 기업 아이덴티티 -->
+                <div class="mb-8 shrink-0 flex-1">
+                    <h2 class="text-2xl font-bold flex items-center text-gray-800 mb-4 border-l-4 border-emerald-500 pl-3">
+                        1. 기업 아이덴티티 <span class="text-slate-400 font-normal text-lg ml-2">(Corporate Identity)</span>
+                    </h2>
+                    <div class="bg-emerald-50 p-6 rounded-xl border border-emerald-200 shadow-sm ml-4">
+                        <div class="mb-6">
+                            <label class="font-bold text-slate-700 text-lg flex items-center"><i class="fa-solid fa-building mr-2 text-emerald-500"></i> 기업명 (Brand Name)</label>
+                            <p class="text-xs text-slate-500 ml-6 mb-2">AI 수석 연구원(제미나이)과 상의하여 결정한 우리 회사만의 멋진 이름을 적어주세요.</p>
+                            <input type="text" class="input-line text-lg font-bold text-emerald-700" placeholder="예: 미믹스 (Mimix)">
+                        </div>
+                        <div>
+                            <label class="font-bold text-slate-700 text-lg flex items-center"><i class="fa-solid fa-users mr-2 text-emerald-500"></i> 대표(CEO) 및 창업 멤버</label>
+                            <p class="text-xs text-slate-500 ml-6 mb-2">위대한 여정을 함께할 모둠원들의 이름과 역할을 적어주세요. (예: 홍길동 CEO, 이순신 CTO)</p>
+                            <textarea class="input-box h-24" placeholder="모둠원 이름 및 역할 입력"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. 핵심 철학 -->
+                <div class="mb-4 shrink-0 flex-1">
+                    <h2 class="text-2xl font-bold flex items-center text-gray-800 mb-4 border-l-4 border-emerald-500 pl-3">
+                        2. 핵심 철학 <span class="text-slate-400 font-normal text-lg ml-2">(Core Philosophy)</span>
+                    </h2>
+                    <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm ml-4 flex flex-col h-full">
+                        <div class="mb-6">
+                            <label class="font-bold text-slate-700 text-lg flex items-center"><i class="fa-solid fa-bullseye mr-2 text-blue-500"></i> 우리의 미션 (Mission)</label>
+                            <p class="text-xs text-slate-500 ml-6 mb-2">우리는 어떤 사회적 문제(에너지 위기 등)를 해결하기 위해 모였나요?</p>
+                            <textarea class="input-box h-24" placeholder="미션 입력"></textarea>
+                        </div>
+                        <div class="mb-6">
+                            <label class="font-bold text-slate-700 text-lg flex items-center"><i class="fa-solid fa-eye mr-2 text-blue-500"></i> 우리의 비전 (Vision)</label>
+                            <p class="text-xs text-slate-500 ml-6 mb-2">우리 회사의 생체모방 기술로 인해 바뀔 10년 뒤 지구의 모습은 어떨까요?</p>
+                            <textarea class="input-box h-24" placeholder="비전 입력"></textarea>
+                        </div>
+                        <div class="relative mt-2 p-5 border-2 border-emerald-400 bg-white rounded-xl shadow-md">
+                            <div class="absolute -top-3 -left-2 bg-emerald-500 text-white text-xs font-bold px-2 py-1 rounded shadow transform -rotate-6">AI Co-created</div>
+                            <label class="font-bold text-emerald-700 text-lg flex items-center mb-1"><i class="fa-solid fa-quote-left mr-2"></i> 핵심 슬로건 (Slogan)</label>
+                            <p class="text-xs text-slate-500 mb-3">회사를 대표하는 강렬하고 멋진 한 줄을 적어주세요. (제미나이의 추천을 적극 활용하세요!)</p>
+                            <input type="text" class="input-line text-xl font-bold text-center text-slate-800" placeholder="멋진 슬로건을 입력하세요">
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- End of Page 1 -->
+
+            <!-- PAGE BREAK -->
+            <div class="html2pdf__page-break"></div>
+            
+            <!-- 화면 구분선 -->
+            <div class="w-full border-t-4 border-dashed border-slate-300 relative bg-slate-100 py-3" data-html2canvas-ignore="true">
+                <p class="text-center text-slate-400 font-bold text-sm">✂️ --- PAGE 2 --- ✂️</p>
+            </div>
+
+            <!-- ================= PAGE 2 ================= -->
+            <div class="a4-page">
+                <div class="text-emerald-600 font-black tracking-widest text-sm mb-6 border-b-2 border-emerald-500 pb-2 shrink-0">PROJECT: ECO-ENERGY STARTUP (PAGE 2)</div>
+
+                <!-- 3. AI 프롬프트 기록 -->
+                <div class="mb-8 flex-1 flex flex-col">
+                    <h2 class="text-2xl font-bold flex items-center text-gray-800 mb-4 border-l-4 border-emerald-500 pl-3">
+                        3. AI 프롬프트 기록 <span class="text-slate-400 font-normal text-lg ml-2">(Prompt Log)</span>
+                    </h2>
+                    
+                    <div class="bg-slate-800 p-6 rounded-2xl text-white shadow-lg relative flex-1 flex flex-col ml-4">
+                        <i class="fa-solid fa-robot absolute right-4 bottom-4 text-8xl text-slate-600 opacity-20"></i>
+                        
+                        <div class="relative z-10 flex flex-col h-full">
+                            <div class="mb-4">
+                                <span class="bg-blue-500 text-white font-bold px-3 py-1 rounded-full text-sm mr-2">Q.</span>
+                                <span class="font-bold text-lg leading-relaxed">AI에게 멋진 회사 이름과 슬로건을 얻어내기 위해 어떤 '프롬프트(질문)'를 입력했나요?</span>
+                            </div>
+                            
+                            <!-- 프롬프트 작성 영역 (넓게) -->
+                            <textarea class="flex-1 w-full border-2 border-slate-600 rounded-xl bg-slate-900 p-5 text-sm font-light text-slate-300 outline-none focus:border-emerald-500 resize-none leading-relaxed" placeholder="Gemini에게 입력했던 프롬프트를 복사해서 이곳에 붙여넣어 보세요."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 마무리 선언 및 서명 (수정된 부분) -->
+                <div class="mt-auto shrink-0 bg-slate-50 border-2 border-slate-200 rounded-xl p-8 text-center relative shadow-sm ml-4 mb-4">
+                    <i class="fa-solid fa-leaf text-4xl text-emerald-400 mb-4"></i>
+                    <p class="text-2xl font-black text-gray-800 leading-relaxed mb-8">
+                        "우리 스타트업은 자연의 지혜를 빌려,<br>
+                        지구의 내일을 지키는 위대한 혁신을 시작하겠습니다."
+                    </p>
+                    
+                    <!-- 글씨 크기를 text-sm으로 줄이고, whitespace-nowrap 추가 -->
+                    <div class="flex justify-center items-center gap-6 text-sm font-bold text-slate-700 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <span class="mr-2">설립일 :</span>
+                            <span>202</span>
+                            <input type="text" class="border-b-2 border-slate-400 w-10 text-center bg-transparent outline-none px-1 mx-1" placeholder="년">
+                            <span>년</span>
+                            <input type="text" class="border-b-2 border-slate-400 w-8 text-center bg-transparent outline-none px-1 mx-1" placeholder="월">
+                            <span>월</span>
+                            <input type="text" class="border-b-2 border-slate-400 w-8 text-center bg-transparent outline-none px-1 mx-1" placeholder="일">
+                            <span>일</span>
+                        </div>
+                        
+                        <div class="flex items-center ml-4">
+                            <span class="mr-2">대표 서명 :</span>
+                            <input type="text" class="border-b-2 border-slate-400 w-24 text-center bg-transparent outline-none px-2" placeholder="이름 입력">
+                            <span class="ml-1">(인)</span>
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- End of Page 2 -->
+
+        </div>
+    </div>
+
+    <script>
+        // PDF 생성 전 input과 textarea의 값을 HTML 속성으로 고정
+        function syncInputValues() {
+            const inputs = document.querySelectorAll('input[type="text"]');
+            inputs.forEach(input => {
+                input.setAttribute('value', input.value);
+            });
+            
+            const textareas = document.querySelectorAll('textarea');
+            textareas.forEach(ta => {
+                ta.innerHTML = ta.value;
+                ta.textContent = ta.value;
+            });
+        }
+
+        function generatePDF() {
+            const btn = document.getElementById('downloadBtn');
+            const element = document.getElementById('pdf-content');
+            const originalContent = btn.innerHTML;
+            
+            syncInputValues();
+            
+            element.classList.add('generating-pdf');
+            
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i> PDF 생성 중...`;
+            btn.disabled = true;
+            btn.classList.add('cursor-not-allowed', 'opacity-75');
+
+            const opt = {
+                margin:       0,
+                filename:     '1차시_스타트업_설립선언문.pdf',
+                image:        { type: 'jpeg', quality: 1 },
+                html2canvas:  { 
+                    scale: 2, 
+                    useCORS: true, 
+                    scrollY: 0, 
+                    windowWidth: document.documentElement.offsetWidth
+                }, 
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                pagebreak:    { mode: ['css', 'legacy'] }
+            };
+
+            window.scrollTo(0, 0);
+
+            html2pdf().set(opt).from(element).save().then(() => {
+                btn.innerHTML = originalContent;
+                btn.disabled = false;
+                btn.classList.remove('cursor-not-allowed', 'opacity-75');
+                element.classList.remove('generating-pdf');
+            }).catch(err => {
+                console.error("PDF 생성 오류:", err);
+                alert("다운로드 중 오류가 발생했습니다.");
+                btn.innerHTML = originalContent;
+                btn.disabled = false;
+                element.classList.remove('generating-pdf');
+            });
+        }
+    </script>
+</body>
+</html>
+```eof
