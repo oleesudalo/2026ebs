@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3차시 펀딩 페이지 프롬프트 빌더</title>
+    <title>3차시 활동지 - 펀딩 페이지 프롬프트 빌더</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
@@ -80,6 +80,9 @@
         .generating-pdf textarea::placeholder {
             color: transparent !important;
         }
+        
+        /* AI 명령어 강조 스타일 */
+        .ai-rule { background-color: #e0e7ff; padding: 2px 6px; border-radius: 4px; font-weight: bold; color: #4338ca; font-size: 0.9em; }
 
         @media print { .no-print { display: none !important; } }
     </style>
@@ -96,7 +99,7 @@
         <div class="flex justify-between items-start border-b-4 border-indigo-500 pb-3 mb-6">
             <div>
                 <div class="text-indigo-600 font-black tracking-widest text-sm mb-1">PROJECT: CROWD FUNDING</div>
-                <h1 class="text-3xl font-black text-gray-900">🚀 웹사이트 런칭 AI 지시서 (프롬프트 빌더)</h1>
+                <h1 class="text-3xl font-black text-gray-900">🚀 웹페이지 런칭 AI 프롬프트 빌더</h1>
             </div>
             <div class="text-right flex flex-col items-end">
                 <div class="border-2 border-gray-300 rounded px-3 py-1 inline-block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">Confidential</div>
@@ -105,7 +108,7 @@
         </div>
         
         <p class="text-sm text-slate-500 mb-6 font-bold bg-slate-100 p-4 rounded-lg border border-slate-200">
-            <i class="fa-solid fa-wand-magic-sparkles text-indigo-500 mr-2"></i> 이 박스 안의 빈칸을 완성한 후, <b class="text-indigo-600">전체 텍스트를 드래그해서 복사(Ctrl+C)</b>하여 AI(Gemini)에게 붙여넣기 하세요.
+            <i class="fa-solid fa-wand-magic-sparkles text-indigo-500 mr-2"></i> 이 박스 안의 빈칸을 완성한 후, <b class="text-indigo-600">전체 텍스트를 드래그해서 복사(Ctrl+C)</b>하여 AI(Gemini 등)에게 붙여넣기 하세요.
         </p>
 
         <!-- 프롬프트 조립 상자 -->
@@ -123,12 +126,23 @@
             발전소 조감도/구조도는 아래 주소를 적절한 위치에 배치해줘.<br>
             <textarea class="textarea-fill" rows="1" oninput="autoResize(this)" placeholder="조감도/구조도 이미지 주소(URL) 붙여넣기"></textarea>
             <br><br>
-            기능적으로는 화면 맨 아래에 <span contenteditable="true" class="editable-inline" data-placeholder="예: 이름, 투자금액, 응원메시지"></span>을(를) 입력받는 펀딩 폼을 생성해 줘.
+            기능적으로는 화면 맨 아래에 <span contenteditable="true" class="editable-inline" data-placeholder="예: 이름, 투자금액, 이메일"></span>을(를) 입력받는 펀딩 폼을 생성해 줘.
             <br><br>
             제출 시 데이터를 아래 API 주소로 전송하는 자바스크립트를 포함해 줘.
             <br>
             <b>API 주소:</b><br>
             <textarea class="textarea-fill text-red-600" rows="1" style="background: rgba(239, 68, 68, 0.05); border-color: #ef4444;" oninput="autoResize(this)" placeholder="선생님이 알려주신 구글 시트 주소 붙여넣기"></textarea>
+            
+            <!-- 🌟 여기에 AI가 에러 없는 방탄 코드를 짜도록 필수 조건을 추가했습니다! 🌟 -->
+            <br><br>
+            <b>[필수 개발 조건 5가지] (매우 중요!)</b><br>
+            펀딩하기 폼과 자바스크립트를 만들 때 아래 5가지 조건을 반드시 지켜서 코드를 작성해 줘.<br>
+            1. <b>기업명 자동 전송</b>: 폼 입력에는 없지만, 자바스크립트에 <span class="ai-rule">const companyName = "위에서 입력한 회사이름";</span>을 고정으로 선언하고 폼 전송 데이터(body)에 포함해 줘.<br>
+            2. <b>API 연동 주소</b>: <span class="ai-rule">const targetUrl = "위에서 입력한 API 주소";</span>를 정확히 적용해 줘.<br>
+            3. <b>새로고침 방지 (직접 연결)</b>: HTML 폼 태그에 <span class="ai-rule">onsubmit="submitFunding(event)"</span>를 직접 적어주고, JS 함수 첫 줄에 반드시 <span class="ai-rule">event.preventDefault();</span>를 넣어서 화면 깜빡임을 막아줘.<br>
+            4. <b>보안(CORS) 통과 설정</b>: fetch API를 사용할 때 옵션에 <span class="ai-rule">mode: 'no-cors'</span>와 <span class="ai-rule">headers: { 'Content-Type': 'text/plain' }</span>을 반드시 적용해 줘.<br>
+            5. <b>CodePen 최적화</b>: 에러가 나지 않도록 html, head, body 태그는 절대 쓰지 말고, 폰트/아이콘/Tailwind CSS를 불러오는 태그를 문서 맨 위에 적은 뒤 바로 웹페이지 내용(div)을 시작해 줘.
+            
             <br><br>
             <b>추가 요청사항:</b><br>
             <textarea class="textarea-extra" oninput="autoResize(this)" placeholder="AI에게 특별히 더 요구하고 싶은 디자인이나 기능이 있다면 이곳에 자유롭게 적어주세요."></textarea>
