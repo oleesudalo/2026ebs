@@ -126,22 +126,23 @@
             발전소 조감도/구조도는 아래 주소에서 가져와서 적절한 위치에 배치해줘.<br>
             <textarea class="textarea-fill" rows="1" oninput="autoResize(this)" placeholder="조감도/구조도 이미지 주소(URL) 붙여넣기"></textarea>
             <br><br>
-            기능적으로는 화면 맨 아래에 <span contenteditable="true" class="editable-inline" data-placeholder="예: 이름, 투자금액, 이메일"></span>을(를) 입력받는 펀딩 폼을 생성해 줘.
+            기능적으로는 화면 맨 아래에 <span contenteditable="true" class="editable-inline" data-placeholder="예: 이름, 투자금액, 투자 이유"></span>을(를) 입력받는 펀딩 폼을 생성해 줘.
             <br><br>
             제출 시 데이터를 아래 API 주소로 전송하는 자바스크립트를 포함해 줘.
             <br>
             <b>API 주소:</b><br>
             <textarea class="textarea-fill text-red-600" rows="1" style="background: rgba(239, 68, 68, 0.05); border-color: #ef4444;" oninput="autoResize(this)" placeholder="선생님이 알려주신 구글 시트 주소 붙여넣기"></textarea>
             
-            <!-- 🌟 여기에 AI가 에러 없는 방탄 코드를 짜도록 필수 조건을 추가했습니다! 🌟 -->
             <br><br>
-            <b>[필수 개발 조건 5가지] (매우 중요!)</b><br>
-            펀딩하기 폼과 자바스크립트를 만들 때 아래 5가지 조건을 반드시 지켜서 코드를 작성해 줘.<br>
+            <b>[필수 개발 조건 6가지] (매우 중요!)</b><br>
+            펀딩하기 폼과 자바스크립트를 만들 때 아래 6가지 조건을 반드시 지켜서 코드를 작성해 줘.<br>
             1. <b>기업명 자동 전송</b>: 폼 입력에는 없지만, 자바스크립트에 <span class="ai-rule">const companyName = "위에서 입력한 회사이름";</span>을 고정으로 선언하고 폼 전송 데이터(body)에 포함해 줘.<br>
             2. <b>API 연동 주소</b>: <span class="ai-rule">const targetUrl = "위에서 입력한 API 주소";</span>를 정확히 적용해 줘.<br>
             3. <b>새로고침 방지 (직접 연결)</b>: HTML 폼 태그에 <span class="ai-rule">onsubmit="submitFunding(event)"</span>를 직접 적어주고, JS 함수 첫 줄에 반드시 <span class="ai-rule">event.preventDefault();</span>를 넣어서 화면 깜빡임을 막아줘.<br>
             4. <b>보안(CORS) 통과 설정</b>: fetch API를 사용할 때 옵션에 <span class="ai-rule">mode: 'no-cors'</span>와 <span class="ai-rule">headers: { 'Content-Type': 'text/plain' }</span>을 반드시 적용해 줘.<br>
-            5. <b>CodePen 최적화</b>: 에러가 나지 않도록 html, head, body 태그는 절대 쓰지 말고, 폰트/아이콘/Tailwind CSS를 불러오는 태그를 문서 맨 위에 적은 뒤 바로 웹페이지 내용(div)을 시작해 줘.
+            5. <b>CodePen 최적화</b>: 에러가 나지 않도록 html, head, body 태그는 절대 쓰지 말고, 폰트/아이콘/Tailwind CSS를 불러오는 태그를 문서 맨 위에 적은 뒤 바로 웹페이지 내용(div)을 시작해 줘.<br>
+            <!-- 🌟 새롭게 추가된 6번째 규칙: 변수명 고정 🌟 -->
+            6. <b>데이터 변수명 일치</b>: 폼에서 '투자 이유' 데이터를 전송할 때, 자바스크립트 변수명을 마음대로 바꾸지 말고 반드시 <span class="ai-rule">reason</span>으로 정확하게 통일해 줘.
             
             <br><br>
             <b>추가 요청사항:</b><br>
@@ -151,9 +152,19 @@
 
         <div class="mt-8 bg-emerald-50 p-6 rounded-xl border border-emerald-200">
             <h3 class="font-bold text-emerald-900 mb-2 text-lg"><i class="fa-solid fa-check-double mr-2"></i> 최종 점검 및 복사</h3>
-            <p class="text-sm text-emerald-800 leading-relaxed">
+            <p class="text-sm text-emerald-800 leading-relaxed mb-4">
                 빈칸을 모두 채웠나요? 글자가 잘리지 않고 잘 보이는지, <b>[이미지 주소]</b>와 <b>[API 주소]</b>가 정확하게 입력되었는지 다시 한번 확인하세요. 완벽하다면 위의 박스 안 내용을 <b class="bg-emerald-200 px-1 rounded">전체 드래그</b>하여 AI에게 전달하세요!
             </p>
+            
+            <!-- 🌟 학생들이 확인할 수 있는 강력한 디버깅 경고창 추가 🌟 -->
+            <div class="bg-yellow-100 p-4 rounded-lg border border-yellow-300 text-sm text-yellow-900 flex items-start gap-3 shadow-sm">
+                <i class="fa-solid fa-triangle-exclamation text-yellow-600 text-lg mt-0.5"></i>
+                <div>
+                    <strong class="block mb-1 text-yellow-800">잠깐! 폼 제출이 안 되고 구글 시트로 넘어가지 않는다면?</strong>
+                    AI(Gemini)가 코드를 짜주었을 때, 자바스크립트의 <b>'투자 이유' 변수명</b>을 <code>reason</code> 대신 <code>message</code>나 <code>investReason</code> 등으로 자기 마음대로 바꾸었을 수 있습니다. <br>
+                    <b>보내는 이름표(HTML)와 받는 이름표(Apps Script)가 완전히 똑같은지</b> 매의 눈으로 꼭 확인해 보세요!
+                </div>
+            </div>
         </div>
     </div>
 
