@@ -158,8 +158,28 @@
                 </button>
             </div>
 
-            <div id="result-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+            <div id="result-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 mb-8">
                 <!-- Result items injected via JS -->
+            </div>
+
+            <!-- Timer Section -->
+            <div class="bg-white/90 border-2 border-emerald-200 rounded-3xl p-8 sm:p-12 shadow-md text-center">
+                <h3 class="text-base sm:text-xl font-bold text-gray-500 uppercase tracking-wider mb-4">발표 타이머 (1분 30초)</h3>
+                <div id="timer-display" class="text-8xl sm:text-9xl md:text-[10rem] font-black text-gray-900 tracking-wider mb-6 leading-none">01:30</div>
+                <div id="timer-message" class="text-emerald-600 font-extrabold mb-8 h-8 text-xl sm:text-2xl"></div>
+                
+                <div class="flex justify-center items-center gap-4">
+                    <button id="timer-start-btn" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 px-10 rounded-2xl shadow-lg transition-all text-lg flex items-center">
+                        <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        시작하기
+                    </button>
+                    <button id="timer-pause-btn" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-4 px-10 rounded-2xl shadow-lg transition-all text-lg hidden items-center">
+                        일시정지
+                    </button>
+                    <button id="timer-reset-btn" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-4 px-10 rounded-2xl shadow-lg transition-all text-lg">
+                        초기화
+                    </button>
+                </div>
             </div>
         </section>
 
@@ -173,8 +193,21 @@
             const resultGrid = document.getElementById('result-grid');
             const resetButton = document.getElementById('reset-button');
 
+            // Timer elements
+            const timerDisplay = document.getElementById('timer-display');
+            const timerMessage = document.getElementById('timer-message');
+            const timerStartBtn = document.getElementById('timer-start-btn');
+            const timerPauseBtn = document.getElementById('timer-pause-btn');
+            const timerResetBtn = document.getElementById('timer-reset-btn');
+
             let selectedTeamCount = 0;
             let isDrawing = false;
+
+            // Timer variables (90 seconds)
+            const TOTAL_TIME = 90;
+            let timeLeft = TOTAL_TIME;
+            let timerInterval = null;
+            let isTimerRunning = false;
 
             // Generate team selection buttons (1 to 10)
             for (let i = 1; i <= 10; i++) {
@@ -192,17 +225,15 @@
 
                 selectedTeamCount = count;
                 
-                // Update selection UI
                 const buttons = teamSelectorContainer.querySelectorAll('.team-btn');
                 buttons.forEach(b => b.classList.remove('active'));
                 clickedBtn.classList.add('active');
 
-                // Enable draw button
                 drawButton.disabled = false;
                 
-                // Hide existing results when count changes
                 resultContainer.classList.add('hidden');
                 resultGrid.innerHTML = '';
+                resetTimer();
             }
 
             function drawOrder() {
@@ -218,13 +249,11 @@
 
                 resultContainer.classList.add('hidden');
                 resultGrid.innerHTML = '';
+                resetTimer();
 
-                // Simulate brief dramatic shuffling pause
                 setTimeout(() => {
-                    // Create array [1, 2, ..., selectedTeamCount]
                     const teams = Array.from({ length: selectedTeamCount }, (_, i) => i + 1);
                     
-                    // Fisher-Yates Shuffle
                     for (let i = teams.length - 1; i > 0; i--) {
                         const j = Math.floor(Math.random() * (i + 1));
                         [teams[i], teams[j]] = [teams[j], teams[i]];
@@ -248,7 +277,6 @@
                     const card = document.createElement('div');
                     card.className = 'result-card bg-white border border-emerald-100 rounded-xl p-4 shadow-sm flex flex-col items-center justify-between text-center cursor-pointer hover:shadow-md hover:border-emerald-300 transition-all select-none';
                     
-                    // Unified badge color for all ranks (emerald theme)
                     const badgeClass = 'bg-emerald-100 text-emerald-800 font-semibold';
 
                     card.innerHTML = `
@@ -268,7 +296,6 @@
                         </div>
                     `;
 
-                    // Click event to toggle completed state
                     card.addEventListener('click', () => {
                         card.classList.toggle('completed');
                         const statusIndicator = card.querySelector('.status-indicator');
@@ -285,6 +312,69 @@
                 });
             }
 
+            // Timer Functions
+            function formatTime(seconds) {
+                const mins = Math.floor(seconds / 60);
+                const secs = seconds % 60;
+                return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+            }
+
+            function updateTimerDisplay() {
+                timerDisplay.textContent = formatTime(timeLeft);
+            }
+
+            function startTimer() {
+                if (isTimerRunning) return;
+                
+                isTimerRunning = true;
+                timerStartBtn.classList.add('hidden');
+                timerPauseBtn.classList.remove('hidden');
+                timerMessage.textContent = '발표 진행 중...';
+                timerMessage.className = 'text-emerald-600 font-extrabold mb-8 h-8 text-xl sm:text-2xl';
+
+                timerInterval = setInterval(() => {
+                    if (timeLeft > 0) {
+                        timeLeft--;
+                        updateTimerDisplay();
+                        
+                        if (timeLeft <= 10 && timeLeft > 0) {
+                            timerMessage.textContent = `종료 ${timeLeft}초 전!`;
+                            timerMessage.className = 'text-amber-500 font-extrabold mb-8 h-8 text-xl sm:text-2xl animate-pulse';
+                        }
+                    } else {
+                        clearInterval(timerInterval);
+                        isTimerRunning = false;
+                        timerPauseBtn.classList.add('hidden');
+                        timerStartBtn.classList.remove('hidden');
+                        timerMessage.textContent = '발표가 종료되었습니다.';
+                        timerMessage.className = 'text-rose-600 font-extrabold mb-8 h-8 text-xl sm:text-2xl';
+                    }
+                }, 1000);
+            }
+
+            function pauseTimer() {
+                clearInterval(timerInterval);
+                isTimerRunning = false;
+                timerPauseBtn.classList.add('hidden');
+                timerStartBtn.classList.remove('hidden');
+                timerMessage.textContent = '일시 정지됨';
+                timerMessage.className = 'text-gray-500 font-extrabold mb-8 h-8 text-xl sm:text-2xl';
+            }
+
+            function resetTimer() {
+                clearInterval(timerInterval);
+                isTimerRunning = false;
+                timeLeft = TOTAL_TIME;
+                updateTimerDisplay();
+                timerMessage.textContent = '';
+                timerPauseBtn.classList.add('hidden');
+                timerStartBtn.classList.remove('hidden');
+            }
+
+            timerStartBtn.addEventListener('click', startTimer);
+            timerPauseBtn.addEventListener('click', pauseTimer);
+            timerResetBtn.addEventListener('click', resetTimer);
+
             function reset() {
                 if (isDrawing) return;
                 
@@ -292,6 +382,7 @@
                 drawButton.disabled = true;
                 resultContainer.classList.add('hidden');
                 resultGrid.innerHTML = '';
+                resetTimer();
                 
                 const buttons = teamSelectorContainer.querySelectorAll('.team-btn');
                 buttons.forEach(b => b.classList.remove('active'));
