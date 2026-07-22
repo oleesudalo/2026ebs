@@ -10,7 +10,7 @@
 
         body {
             font-family: 'Noto Sans KR', sans-serif;
-            background: linear-gradient(135deg, #f0fdf4 0%, #eff6ff 100%); /* Light green to light blue gradient */
+            background: linear-gradient(135deg, #f0fdf4 0%, #eff6ff 100%);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -19,7 +19,6 @@
             color: #1e293b;
         }
 
-        /* Glassmorphism effect for the main container */
         .glass-panel {
             background: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(12px);
@@ -28,7 +27,6 @@
             box-shadow: 0 12px 35px -10px rgba(16, 185, 129, 0.12), 0 4px 6px -4px rgba(59, 130, 246, 0.08);
         }
 
-        /* Team selector buttons */
         .team-btn {
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
@@ -36,14 +34,13 @@
         }
 
         .team-btn.active {
-            background-color: #059669; /* Emerald 600 */
+            background-color: #059669;
             color: #ffffff;
             font-weight: 700;
             border-color: #059669;
             box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);
         }
 
-        /* Primary action button styling */
         .draw-btn {
             background: linear-gradient(135deg, #059669 0%, #2563eb 100%);
             transition: transform 0.15s, box-shadow 0.2s;
@@ -65,7 +62,6 @@
             box-shadow: none;
         }
 
-        /* Result card animation */
         @keyframes popUp {
             0% {
                 opacity: 0;
@@ -83,7 +79,6 @@
             transition: all 0.25s ease;
         }
 
-        /* Staggered animation delay */
         .result-card:nth-child(1) { animation-delay: 0.05s; }
         .result-card:nth-child(2) { animation-delay: 0.1s; }
         .result-card:nth-child(3) { animation-delay: 0.15s; }
@@ -109,7 +104,6 @@
             -webkit-text-fill-color: transparent;
         }
 
-        /* Completed state styling */
         .result-card.completed {
             background-color: #f8fafc !important;
             border-color: #cbd5e1 !important;
@@ -130,7 +124,6 @@
 
     <main class="w-full max-w-4xl mx-auto glass-panel rounded-2xl p-6 sm:p-10">
         
-        <!-- Header Section -->
         <header class="text-center mb-8">
             <h1 class="text-3xl sm:text-4xl font-black tracking-tight text-gray-900 mb-2">
                 <span class="text-accent">100만 에코코인</span> 투자 대회
@@ -139,7 +132,6 @@
             <div class="w-16 h-1 bg-emerald-500 mx-auto mt-4 rounded-full"></div>
         </header>
 
-        <!-- Controls Section: Team Count Selection -->
         <section class="mb-8">
             <label class="block text-xs font-bold text-gray-600 mb-3 uppercase tracking-wider text-center">전체 팀 수 선택</label>
             <div class="flex flex-wrap justify-center gap-2" id="team-selector">
@@ -147,7 +139,6 @@
             </div>
         </section>
 
-        <!-- Action Section: Draw Button -->
         <div class="flex justify-center mb-8">
             <button id="draw-button" disabled
                 class="draw-btn text-white font-bold py-3 px-10 rounded-xl shadow-md text-base tracking-wide focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-opacity-50">
@@ -155,7 +146,6 @@
             </button>
         </div>
 
-        <!-- Results Section: Horizontal Grid Layout -->
         <section id="result-container" class="hidden">
             <div class="flex flex-col sm:flex-row items-center justify-between mb-4 px-2">
                 <h2 class="text-lg font-bold text-gray-800 flex items-center mb-2 sm:mb-0">
@@ -168,7 +158,6 @@
                 </button>
             </div>
 
-            <!-- Horizontal alignment grid -->
             <div id="result-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
                 <!-- Result items injected via JS -->
             </div>
@@ -259,15 +248,12 @@
                     const card = document.createElement('div');
                     card.className = 'result-card bg-white border border-emerald-100 rounded-xl p-4 shadow-sm flex flex-col items-center justify-between text-center cursor-pointer hover:shadow-md hover:border-emerald-300 transition-all select-none';
                     
-                    // Highlight color assignment for rank badges
-                    let badgeClass = 'bg-emerald-100 text-emerald-800';
-                    if (index === 0) badgeClass = 'bg-gradient-to-r from-amber-400 to-amber-500 text-white font-bold shadow-sm';
-                    else if (index === 1) badgeClass = 'bg-gradient-to-r from-slate-300 to-slate-400 text-white font-bold shadow-sm';
-                    else if (index === 2) badgeClass = 'bg-gradient-to-r from-amber-600 to-amber-700 text-white font-bold shadow-sm';
+                    // Unified badge color for all ranks (emerald theme)
+                    const badgeClass = 'bg-emerald-100 text-emerald-800 font-semibold';
 
                     card.innerHTML = `
                         <div class="w-full flex items-center justify-between mb-2">
-                            <span class="card-badge text-xs px-2 py-0.5 rounded-full font-semibold ${badgeClass}">
+                            <span class="card-badge text-xs px-2 py-0.5 rounded-full ${badgeClass}">
                                 ${index + 1}순번
                             </span>
                             <span class="text-xs text-gray-400 status-indicator">대기중</span>
