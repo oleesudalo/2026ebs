@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>스타트업 피칭 투자 메모장 활동지</title>
+    <!-- Tailwind CSS 로드 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- html2pdf.js 로드 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- 폰트 로드 -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f3f4f6;
+            margin: 0;
+            padding: 0;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .a4-page {
+            width: 210mm;
+            min-height: 297mm;
+            padding: 15mm 20mm;
+            margin: 10mm auto;
+            background: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            position: relative;
+            box-sizing: border-box;
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .memo-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        .memo-table th, .memo-table td {
+            border: 1px solid #cbd5e1;
+            padding: 12px;
+            vertical-align: middle;
+        }
+        .memo-table th {
+            background-color: #fffaf5;
+            font-weight: bold;
+            color: #475569;
+            text-align: center;
+        }
+        .memo-input {
+            width: 100%;
+            border: none;
+            background: transparent;
+            outline: none;
+            font-size: 0.95rem;
+            color: #1e293b;
+        }
+        .memo-textarea {
+            width: 100%;
+            border: none;
+            background: transparent;
+            outline: none;
+            resize: none;
+            font-size: 0.95rem;
+            color: #1e293b;
+            height: 45px;
+            line-height: 1.4;
+        }
+
+        /* 귤색 포인트 배지 */
+        .tangerine-badge {
+            display: inline-flex;
+            align-items: center;
+            background-color: #ea580c;
+            color: #ffedd5;
+            font-size: 0.75rem;
+            font-weight: bold;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        @media print {
+            body { background: white; }
+            .a4-page {
+                margin: 0;
+                box-shadow: none;
+                width: 100%;
+                height: 100%;
+                page-break-after: always;
+                padding: 15mm;
+            }
+            .no-print { display: none !important; }
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- 상단 컨트롤 바 (인쇄 시 숨김) -->
+    <div class="no-print fixed top-0 w-full bg-slate-800 text-white p-4 z-50 flex justify-between items-center shadow-lg">
+        <div class="text-sm flex items-center gap-4">
+            <span class="font-bold text-orange-400">💡 [4차시 활동지]</span> 
+            <span>발표 메모를 작성하고 행을 추가할 수 있습니다.</span>
+            <button onclick="addMemoRow()" class="bg-orange-600 hover:bg-orange-500 text-white text-xs font-bold py-1.5 px-3 rounded-lg transition flex items-center shadow cursor-pointer">
+                <i class="fa-solid fa-plus mr-1"></i> 팀 메모란 추가하기
+            </button>
+        </div>
+        <button id="downloadBtn" onclick="generatePDF()" class="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-6 rounded-full transition-colors flex items-center shadow-md cursor-pointer">
+            <i class="fa-solid fa-download mr-2"></i> PDF로 변환하여 다운로드
+        </button>
+    </div>
+
+    <div class="no-print h-20"></div>
+
+    <!-- A4 본문 영역 -->
+    <div id="pdf-content" class="a4-page">
+        
+        <!-- Header 영역 (귤색 포인트) -->
+        <div class="flex justify-between items-start border-b-4 border-orange-400 pb-3 mb-6 shrink-0">
+            <div>
+                <div class="text-orange-500 font-black tracking-widest text-sm mb-1">PROJECT: ECO-ENERGY PITCHING DAY</div>
+                <h1 class="text-3xl font-black text-gray-900 tracking-tight">엔젤 투자자 피칭 메모장</h1>
+            </div>
+            <div class="text-right">
+                <div class="flex gap-2 justify-end mb-1 items-center">
+                    <div class="border-2 border-slate-300 px-2.5 py-0.5 text-xs font-bold text-slate-500 rounded">소속 모둠</div>
+                    <input type="text" class="border-b-2 border-slate-400 w-24 outline-none text-center font-bold text-slate-800 bg-transparent text-sm" placeholder="예: 3모둠">
+                </div>
+                <div class="flex gap-2 justify-end items-center">
+                    <div class="border-2 border-slate-300 px-2.5 py-0.5 text-xs font-bold text-slate-500 rounded">투자자 성명</div>
+                    <input type="text" class="border-b-2 border-slate-400 w-24 outline-none text-center font-bold text-slate-800 bg-transparent text-sm" placeholder="이름 입력">
+                </div>
+            </div>
+        </div>
+
+        <!-- 안내 문구 (옅은 귤빛 배경) -->
+        <div class="bg-orange-50 border border-orange-200 p-3.5 rounded-xl mb-4 flex items-center justify-between shrink-0">
+            <div class="flex items-center text-xs text-orange-950">
+                <i class="fa-solid fa-circle-info text-orange-500 mr-2 text-base"></i>
+                <span>다른 팀의 발표를 경청하며 <b>[오, 믿음이 간다!]</b>와 <b>[에이, 좀 아쉽다!]</b>를 꼼꼼히 기록하세요. 이 메모는 나중에 100만 에코코인을 배분할 때 결정적인 근거가 됩니다!</span>
+            </div>
+            <div class="no-print shrink-0 ml-3">
+                <button onclick="addMemoRow()" class="bg-orange-500 text-white text-xs font-bold py-1 px-3 rounded hover:bg-orange-600 transition">
+                    + 행 추가
+                </button>
+            </div>
+        </div>
+
+        <!-- 메모 테이블 -->
+        <div class="mb-6 flex-1">
+            <table class="memo-table">
+                <thead>
+                    <tr>
+                        <th class="w-1/4 text-sm py-3 text-slate-700">발표하는 팀 이름</th>
+                        <th class="w-[37.5%] text-blue-700 text-sm py-3"><i class="fa-regular fa-thumbs-up mr-1"></i> 오, 믿음이 간다! (좋은 점)</th>
+                        <th class="w-[37.5%] text-red-600 text-sm py-3"><i class="fa-regular fa-thumbs-down mr-1"></i> 에이, 좀 아쉽다 (부족한 점)</th>
+                    </tr>
+                </thead>
+                <tbody id="memoTableBody">
+                    <!-- 기본 5개 팀 슬롯 -->
+                    <tr>
+                        <td class="font-bold text-slate-700 text-center"><input type="text" class="memo-input font-bold text-center" value="1모둠: "></td>
+                        <td><textarea class="memo-textarea" placeholder="소음 차단 원리가 논리적임..."></textarea></td>
+                        <td><textarea class="memo-textarea" placeholder="강물에 설치하기엔 크기가 너무 큼..."></textarea></td>
+                    </tr>
+                    <tr>
+                        <td class="font-bold text-slate-700 text-center"><input type="text" class="memo-input font-bold text-center" value="2모둠: "></td>
+                        <td><textarea class="memo-textarea" placeholder=""></textarea></td>
+                        <td><textarea class="memo-textarea" placeholder=""></textarea></td>
+                    </tr>
+                    <tr>
+                        <td class="font-bold text-slate-700 text-center"><input type="text" class="memo-input font-bold text-center" value="3모둠: "></td>
+                        <td><textarea class="memo-textarea" placeholder=""></textarea></td>
+                        <td><textarea class="memo-textarea" placeholder=""></textarea></td>
+                    </tr>
+                    <tr>
+                        <td class="font-bold text-slate-700 text-center"><input type="text" class="memo-input font-bold text-center" value="4모둠: "></td>
+                        <td><textarea class="memo-textarea" placeholder=""></textarea></td>
+                        <td><textarea class="memo-textarea" placeholder=""></textarea></td>
+                    </tr>
+                    <tr>
+                        <td class="font-bold text-slate-700 text-center"><input type="text" class="memo-input font-bold text-center" value="5모둠: "></td>
+                        <td><textarea class="memo-textarea" placeholder=""></textarea></td>
+                        <td><textarea class="memo-textarea" placeholder=""></textarea></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 하단: 포트폴리오 계획 요약 -->
+        <div class="bg-slate-50 border-2 border-slate-200 p-4 rounded-xl mt-auto shrink-0">
+            <div class="flex items-center justify-between mb-2">
+                <h3 class="font-bold text-slate-800 text-sm flex items-center">
+                    <span class="tangerine-badge mr-2"><i class="fa-solid fa-coins mr-1"></i> 포트폴리오 구상</span>
+                    발표를 모두 들은 후, 내 100만 ec를 배분할 상위 2개 팀을 미리 적어보세요.
+                </h3>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+                <div class="bg-white p-2.5 rounded border border-slate-200 flex items-center">
+                    <span class="text-xs font-bold text-slate-500 w-16 whitespace-nowrap">1순위 팀:</span>
+                    <input type="text" class="memo-input text-sm border-b border-slate-300 pb-0.5" placeholder="가장 투자하고 싶은 팀 이름">
+                </div>
+                <div class="bg-white p-2.5 rounded border border-slate-200 flex items-center">
+                    <span class="text-xs font-bold text-slate-500 w-16 whitespace-nowrap">2순위 팀:</span>
+                    <input type="text" class="memo-input text-sm border-b border-slate-300 pb-0.5" placeholder="두 번째로 투자할 팀 이름">
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="mt-6 pt-4 border-t border-gray-200 text-center shrink-0">
+            <p class="text-xs font-bold text-slate-500">
+                "객관적인 메모와 데이터 분석이 훌륭한 투자자를 만듭니다. 수고하셨습니다!"
+            </p>
+        </div>
+
+    </div>
+
+    <script>
+        function addMemoRow() {
+            const tbody = document.getElementById('memoTableBody');
+            const rowCount = tbody.rows.length + 1;
+            const newRow = tbody.insertRow();
+            
+            newRow.innerHTML = `
+                <td class="font-bold text-slate-700 text-center"><input type="text" class="memo-input font-bold text-center" value="${rowCount}모둠: "></td>
+                <td><textarea class="memo-textarea" placeholder=""></textarea></td>
+                <td><textarea class="memo-textarea" placeholder=""></textarea></td>
+            `;
+        }
+
+        function syncValues() {
+            document.querySelectorAll('input[type="text"]').forEach(input => {
+                input.setAttribute('value', input.value);
+            });
+            document.querySelectorAll('textarea').forEach(ta => {
+                ta.innerHTML = ta.value;
+                ta.textContent = ta.value;
+            });
+        }
+
+        function generatePDF() {
+            const btn = document.getElementById('downloadBtn');
+            const originalContent = btn.innerHTML;
+            
+            syncValues();
+            
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i> PDF 생성 중...`;
+            btn.disabled = true;
+            btn.classList.add('cursor-not-allowed', 'opacity-75');
+
+            const element = document.getElementById('pdf-content');
+
+            const opt = {
+                margin:       0,
+                filename:     '엔젤투자자_피칭_메모장_활동지.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf().set(opt).from(element).save().then(() => {
+                btn.innerHTML = originalContent;
+                btn.disabled = false;
+                btn.classList.remove('cursor-not-allowed', 'opacity-75');
+            }).catch(err => {
+                console.error("PDF 생성 오류:", err);
+                alert("다운로드 중 오류가 발생했습니다.");
+                btn.innerHTML = originalContent;
+                btn.disabled = false;
+            });
+        }
+    </script>
+</body>
+</html>
